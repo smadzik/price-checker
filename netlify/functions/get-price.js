@@ -1,5 +1,5 @@
 const fetch = require("node-fetch");
-const { JSDOM } = require("jsdom");
+const cheerio = require("cheerio");
 
 exports.handler = async function(event) {
   const url = event.queryStringParameters.url;
@@ -19,11 +19,10 @@ exports.handler = async function(event) {
     });
 
     const html = await response.text();
-    const dom = new JSDOM(html);
-    const document = dom.window.document;
+    const $ = cheerio.load(html);
 
-    const span = document.querySelector('span.current[itemprop="price"]');
-    const price = span?.getAttribute("content");
+    // Аналогично селектору из jsdom:
+    const price = $('span.current[itemprop="price"]').attr('content');
 
     if (!price) {
       return {
