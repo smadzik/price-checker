@@ -13,7 +13,7 @@ exports.handler = async function(event) {
   try {
     const response = await fetch(url, {
       headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
         "Accept-Language": "ru,en;q=0.9"
       }
     });
@@ -21,7 +21,7 @@ exports.handler = async function(event) {
     const html = await response.text();
     const $ = cheerio.load(html);
 
-    // Аналогично селектору из jsdom:
+    // Ищем цену по селектору span.current[itemprop="price"]
     const price = $('span.current[itemprop="price"]').attr('content');
 
     if (!price) {
