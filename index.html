@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head><meta charset="UTF-8"><title>Калькулятор</title></head>
+<body>
+<input type="text" id="url" placeholder="Ссылка на vostok.ru">
+<button onclick="fetchPrice()">Посчитать</button>
+<pre id="output"></pre>
+<script>
+async function fetchPrice() {
+  const url = document.getElementById('url').value.trim();
+  if (!url.startsWith('https://vostok.ru')) { output('Только vostok.ru'); return; }
+  try {
+    const res = await fetch('/.netlify/functions/get-price?url='+encodeURIComponent(url));
+    const data = await res.json();
+    if (data.error) { output('Ошибка: '+data.error); return; }
+    const price = parseFloat(data.price), disc = price*0.85;
+    output(`Оригинал: ${price.toFixed(2)} ₽\nСо скидкой: ${disc.toFixed(2)} ₽`);
+  } catch {
+    output('Сбой при загрузке.');
+  }
+}
+function output(s){document.getElementById('output').innerText=s;}
+</script>
+</body>
+</html>
